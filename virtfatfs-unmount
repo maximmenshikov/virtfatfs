@@ -4,13 +4,13 @@ export TOP_DIR="$(cd "$(dirname "$(which "$0")")"/.. ; pwd -P)"
 
 cd ${TOP_DIR}
 
-loop="$1"
-
 function fail()
 {
 	echo $@ >&2
 	exit 1
 }
+
+loop="$1"
 
 if [ "${loop}" == "" ] ; then
 	fail "Loop device is not set"

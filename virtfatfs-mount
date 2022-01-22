@@ -4,19 +4,25 @@ export TOP_DIR="$(cd "$(dirname "$(which "$0")")"/.. ; pwd -P)"
 
 cd ${TOP_DIR}
 
-img_file="$1"
-
 function fail()
 {
 	echo $@ >&2
 	exit 1
 }
 
+img_file="$1"
+rw="$2"
+
 if [ "${img_file}" == "" ] ; then
 	fail "Image file is not set"
 fi
 
-result="$(env LC_ALL=C.UTF-8 udisksctl loop-setup -f "${img_file}" \
+if [ "${rw}" != "" ] && [ "${rw}" != "rw" ] ; then
+	fail "Unknown RW mode: ${rw}"
+fi
+
+rw="${rw:--r}"
+result="$(env LC_ALL=C.UTF-8 udisksctl loop-setup -f "${img_file}" ${rw} \
 		  --no-user-interaction)"
 loop="$(echo $result | sed -E "s/.*(\/dev\/.*)\./\1/")"
 if [ "$loop" == "" ] ; then
