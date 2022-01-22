@@ -1,13 +1,11 @@
 #!/bin/bash
 
-export TOP_DIR="$(cd "$(dirname "$(which "$0")")" ; pwd -P)"
-
-cd ${TOP_DIR}
+export TOP_DIR="$(cd "$(dirname "$(command -v "$0")")" ; pwd -P)"
 
 function fail()
 {
 	if [ $# -ne 0 ] ; then
-		echo $@ >&2
+		echo "$@" >&2
 	fi
 	exit 1
 }
@@ -15,7 +13,7 @@ function fail()
 function usage()
 {
 	if [ $# -ne 0 ] ; then
-		echo $@ >&2
+		echo "$@" >&2
 	fi
 	echo "Usage: $0 data_dir img_file img_size" >&2
 	echo "Create a FATFS image with given content and size" >&2
@@ -29,15 +27,17 @@ function usage()
 	fail
 }
 
+cd "${TOP_DIR}" || fail "Failed to change directory"
+
 loop="$1"
 
 if [ "${loop}" == "" ] ; then
 	usage "Loop device is not set"
 fi
 
-which udisksctl > /dev/null || fail "udisksctl is not installed"
-which rsync > /dev/null || fail "rsync is not installed"
-which sync > /dev/null || fail "sync is not installed"
+command -v udisksctl > /dev/null || fail "udisksctl is not installed"
+command -v rsync > /dev/null || fail "rsync is not installed"
+command -v sync > /dev/null || fail "sync is not installed"
 
 env LC_ALL=C.UTF-8 udisksctl unmount --block-device "${loop}" \
 	|| fail "Failed to unmount image"
