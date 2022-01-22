@@ -6,14 +6,33 @@ cd ${TOP_DIR}
 
 function fail()
 {
-	echo $@ >&2
+	if [ $# -ne 0 ] ; then
+		echo $@ >&2
+	fi
 	exit 1
+}
+
+function usage()
+{
+	if [ $# -ne 0 ] ; then
+		echo $@ >&2
+	fi
+	echo "Usage: $0 data_dir img_file img_size" >&2
+	echo "Create a FATFS image with given content and size" >&2
+	echo >&2
+	echo "       data_dir          directory with data" >&2
+	echo "       img_file          output image file" >&2
+	echo "       img_size          output image size in MB" >&2
+	echo >&2
+	echo "Examples:" >&2
+	echo "$0 /home/test/data test.img 2000" >&2
+	fail
 }
 
 loop="$1"
 
 if [ "${loop}" == "" ] ; then
-	fail "Loop device is not set"
+	usage "Loop device is not set"
 fi
 
 env LC_ALL=C.UTF-8 udisksctl unmount --block-device "${loop}" \

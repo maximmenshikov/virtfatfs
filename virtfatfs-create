@@ -6,24 +6,48 @@ cd ${TOP_DIR}
 
 function fail()
 {
-	echo $@ >&2
+	if [ $# -ne 0 ] ; then
+		echo $@ >&2
+	fi
 	exit 1
+}
+
+function usage()
+{
+	if [ $# -ne 0 ] ; then
+		echo $@ >&2
+	fi
+	echo "Usage: $0 data_dir img_file img_size" >&2
+	echo "Create a FATFS image with given content and size" >&2
+	echo >&2
+	echo "       data_dir          directory with data" >&2
+	echo "       img_file          output image file" >&2
+	echo "       img_size          output image size in MB" >&2
+	echo >&2
+	echo "Examples:" >&2
+	echo "$0 /home/test/data test.img 2000" >&2
+	fail
 }
 
 data_dir="$1"
 img_file="$2"
 img_size="$3"
 
+if [ "$1" == "" ] ; then
+	usage
+fi
+
 if [ ! -d ${data_dir} ] ; then
-	fail "Directory is missing: ${data_dir}"
+	usage "Directory is missing: ${data_dir}"
 fi
 
 if [ "${img_file}" == "" ] ; then
-	fail "Image file is not set"
+	usage "Image file is not set"
+
 fi
 
 if [ "${img_size}" == "" ] ; then
-	fail "Image size is not set"
+	usage "Image size is not set"
 fi
 
 dd if=/dev/zero "of=${img_file}" "count=${img_size}" bs=1M \

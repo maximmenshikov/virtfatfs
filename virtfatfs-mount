@@ -6,23 +6,44 @@ cd ${TOP_DIR}
 
 function fail()
 {
-	echo $@ >&2
+	if [ $# -ne 0 ] ; then
+		echo $@ >&2
+	fi
 	exit 1
+}
+
+function usage()
+{
+	if [ $# -ne 0 ] ; then
+		echo $@ >&2
+	fi
+	echo "Usage: $0 img_file" >&2
+	echo "Mount the image file" >&2
+	echo >&2
+	echo "       img_file          target image file" >&2
+	echo >&2
+	echo "Examples:" >&2
+	echo "$0 test.img" >&2
+	fail
 }
 
 img_file="$1"
 rw="$2"
 
+if [ "$1" == "" ] ; then
+	usage
+fi
+
 if [ "${img_file}" == "" ] ; then
-	fail "Image file is not set"
+	usage "Image file is not set"
 fi
 
 if [ "${rw}" != "" ] && [ "${rw}" != "rw" ] ; then
-	fail "Unknown RW mode: ${rw}"
+	usage "Unknown RW mode: ${rw}"
 fi
 
 if [ ! -f "${img_file}" ] ; then
-	fail "Image file ${img_file} doesn't exist"
+	usage "Image file ${img_file} doesn't exist"
 fi
 
 rw="${rw:--r}"
