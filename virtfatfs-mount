@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export TOP_DIR="$(cd "$(dirname "$(which "$0")")"/.. ; pwd -P)"
+export TOP_DIR="$(cd "$(dirname "$(which "$0")")" ; pwd -P)"
 
 cd ${TOP_DIR}
 
@@ -22,7 +22,7 @@ if [ "${rw}" != "" ] && [ "${rw}" != "rw" ] ; then
 fi
 
 if [ ! -f "${img_file}" ] ; then
-	fail "Image file doesn't exist"
+	fail "Image file ${img_file} doesn't exist"
 fi
 
 rw="${rw:--r}"

@@ -36,8 +36,16 @@ mkfs.fat "${img_file}" \
 result=$(./virtfatfs-mount "${img_file}" rw)
 media="$(echo $result | awk '{print $1}')"
 loop="$(echo $result | awk '{print $2}')"
+
+function cleanup() {
+  result=$?
+  ./virtfatfs-unmount "$loop"
+  exit ${result}
+}
+
+trap cleanup EXIT ERR
+
 echo "Media: $media"
-echo "Loop: $loop"
-rsync --progress --recursive "${data_dir}/*" "${media}/"
+echo "Loop:  $loop"
+rsync --progress --recursive --executability --times ${data_dir}/* "${media}/"
 sync "${media}/"
-./virtfatfs-unmount "$loop"
