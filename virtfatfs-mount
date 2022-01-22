@@ -21,6 +21,10 @@ if [ "${rw}" != "" ] && [ "${rw}" != "rw" ] ; then
 	fail "Unknown RW mode: ${rw}"
 fi
 
+if [ ! -f "${img_file}" ] ; then
+	fail "Image file doesn't exist"
+fi
+
 rw="${rw:--r}"
 result="$(env LC_ALL=C.UTF-8 udisksctl loop-setup -f "${img_file}" ${rw} \
 		  --no-user-interaction)"
