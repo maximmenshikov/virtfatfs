@@ -46,6 +46,10 @@ if [ ! -f "${img_file}" ] ; then
 	usage "Image file ${img_file} doesn't exist"
 fi
 
+which udisksctl > /dev/null || fail "udisksctl is not installed"
+which rsync > /dev/null || fail "rsync is not installed"
+which sync > /dev/null || fail "sync is not installed"
+
 rw="${rw:--r}"
 result="$(env LC_ALL=C.UTF-8 udisksctl loop-setup -f "${img_file}" ${rw} \
 		  --no-user-interaction)"
