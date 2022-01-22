@@ -62,8 +62,8 @@ mkfs.fat "${img_file}" \
 	|| fail "Failed to create FAT image"
 
 result=$(./virtfatfs-mount "${img_file}" rw)
-media="$(echo "$result" | awk '{print $1}')"
-loop="$(echo "$result" | awk '{print $2}')"
+media="$(echo $result | awk '{print $1}')"
+loop="$(echo $result | awk '{print $2}')"
 
 function cleanup() {
   result=$?
